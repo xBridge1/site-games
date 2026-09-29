@@ -1,0 +1,8 @@
+{
+  "title": "Hill Climb Racing",
+  "category": "Corrida",
+  "description": "Encare subidas e terrenos desafiadores ao volante.",
+  "kind": "swf",
+  "entry": "game.swf",
+  "emoji": "🚙"
+}
