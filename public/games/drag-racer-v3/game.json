@@ -1,0 +1,8 @@
+{
+  "title": "Drag Racer v3",
+  "category": "Clássicos",
+  "description": "Jogo Flash de corrida de carros, onde você pode personalizar seu veículo e competir em corridas emocionantes.",
+  "kind": "swf",
+  "entry": "game.swf",
+  "emoji": "🏎️"
+}

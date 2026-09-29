@@ -1,0 +1,56 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const gamesDirectory = path.join(projectRoot, 'public', 'games');
+const outputFile = path.join(projectRoot, 'src', 'data', 'localGames.generated.js');
+
+const inferKind = (entry) => {
+  const extension = path.extname(entry).toLowerCase();
+  if (extension === '.swf') return 'swf';
+  if (extension === '.html' || extension === '.htm') return 'html';
+  return 'external';
+};
+
+const encodeEntry = (entry) => entry
+  .split(/[\\/]+/)
+  .map((part) => encodeURIComponent(part))
+  .join('/');
+
+const games = fs.existsSync(gamesDirectory)
+  ? fs.readdirSync(gamesDirectory, { withFileTypes: true })
+      .filter((item) => item.isDirectory())
+      .map((directory) => {
+        const slug = directory.name;
+        const manifestFile = path.join(gamesDirectory, slug, 'game.json');
+        if (!fs.existsSync(manifestFile)) return null;
+
+        const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+        const entry = manifest.entry || (manifest.kind === 'swf' ? 'game.swf' : 'index.html');
+        const kind = manifest.kind || inferKind(entry);
+
+        return {
+          id: manifest.id || slug,
+          title: manifest.title || slug,
+          category: manifest.category || 'Jogos',
+          description: manifest.description || 'Jogo online.',
+          rating: Number(manifest.rating || 0),
+          plays: Number(manifest.plays || 0),
+          kind,
+          url: `/games/${encodeURIComponent(slug)}/${encodeEntry(entry)}`,
+          local: false,
+          emoji: manifest.emoji || '🎮',
+        };
+      })
+      .filter(Boolean)
+  : [];
+
+fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+fs.writeFileSync(
+  outputFile,
+  `const localGames = ${JSON.stringify(games, null, 2)};\n\nexport default localGames;\n`,
+  'utf8'
+);
+
+console.log(`Catálogo gerado: ${games.length} jogo(s) local(is).`);

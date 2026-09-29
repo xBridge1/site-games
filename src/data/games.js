@@ -1,4 +1,7 @@
+import localGames from './localGames.generated';
+
 const games = [
+  ...localGames,
   {
     id: 'reflexo',
     title: 'Reflexo Ultrassônico',
@@ -16,6 +19,7 @@ const games = [
     description: 'O clássico dos arcades. Coma todos os pontos e fuja dos fantasmas.',
     rating: 4.9,
     plays: 98200,
+    kind: 'external',
     url: 'https://www.google.com/logos/2010/pacman10-i.html',
     local: false,
     emoji: '🟡',
@@ -27,6 +31,7 @@ const games = [
     description: 'Explore galáxias distantes e descubra planetas misteriosos.',
     rating: 4.5,
     plays: 34200,
+    kind: 'external',
     url: 'https://example.com/jogo-espacial',
     local: false,
     emoji: '🚀',
@@ -35,9 +40,10 @@ const games = [
     id: 4,
     title: 'Puzzle do Cubo',
     category: 'Puzzle',
-    description: 'Desafie sua mente com quebra-cabe�as cada vez mais complexos.',
+    description: 'Desafie sua mente com quebra-cabeças cada vez mais complexos.',
     rating: 4.7,
     plays: 56700,
+    kind: 'external',
     url: 'https://example.com/puzzle-cubo',
     local: false,
     emoji: '🧩',
@@ -49,9 +55,10 @@ const games = [
     description: 'Corra, desvie e sobreviva na pista mais perigosa do mundo.',
     rating: 4.6,
     plays: 72300,
+    kind: 'external',
     url: 'https://example.com/corrida-mortal',
     local: false,
-    emoji: '🏰️',
+    emoji: '🏎️',
   },
 ];
 
