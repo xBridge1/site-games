@@ -12,18 +12,6 @@ const games = [
     local: true,
     emoji: '⚡',
   },
-  {
-    id: 2,
-    title: 'Pac-Man Clássico',
-    category: 'Clássicos',
-    description: 'O clássico dos arcades. Coma todos os pontos e fuja dos fantasmas.',
-    rating: 4.9,
-    plays: 98200,
-    kind: 'external',
-    url: 'https://www.google.com/logos/2010/pacman10-i.html',
-    local: false,
-    emoji: '🟡',
-  },
 ];
 
 export default games;

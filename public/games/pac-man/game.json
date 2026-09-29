@@ -1,0 +1,9 @@
+{
+  "title": "Pac-Man",
+  "category": "Clássicos",
+  "description": "Explore o labirinto, coma os pontos e escape dos fantasmas.",
+  "kind": "swf",
+  "entry": "game.swf",
+  "emoji": "🟡",
+  "addedAt": "2026-09-29T22:00:00Z"
+}

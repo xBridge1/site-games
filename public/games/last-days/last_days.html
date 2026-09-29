@@ -1053,8 +1053,9 @@ let volumeAudio = .7;
 let volumeAudioAnterior = .7;
 let temaIndice = 0;
 try{
-  const salvo=Number(localStorage.getItem(AUDIO_VOLUME_KEY));
-  if(Number.isFinite(salvo))volumeAudio=clamp(salvo,0,1);
+  const volumeSalvo=localStorage.getItem(AUDIO_VOLUME_KEY);
+  const salvo=Number(volumeSalvo);
+  if(volumeSalvo!==null && Number.isFinite(salvo))volumeAudio=clamp(salvo,0,1);
   const temaSalvo=Number(localStorage.getItem(AUDIO_TEMA_KEY));
   if(Number.isInteger(temaSalvo) && temaSalvo>=0)temaIndice=temaSalvo%TEMAS_JOGO.length;
 }catch(e){}
@@ -1110,12 +1111,12 @@ function tocarAudioExpedicao(){
   expedicaoAudio.loop=true;expedicaoAudio.volume=.42*volumeAudio;
   expedicaoAudio.play().catch(()=>{});
 }
-function pararAudioExpedicao(){
+function pararAudioExpedicao(retomarTema=true){
   if(expedicaoAudio){expedicaoAudio.pause();expedicaoAudio.currentTime=0;expedicaoAudio=null;}
-  if(S?.vivo && S.prologo?.concluido)retomarTemaJogo();
+  if(retomarTema && S?.vivo && S.prologo?.concluido)retomarTemaJogo();
 }
 function tocarTemaJogo(){
-  if(temaAudio || !TEMAS_JOGO.length)return;
+  if(temaAudio || expedicaoAudio || prologoAudio || !TEMAS_JOGO.length)return;
   const faixa=TEMAS_JOGO[temaIndice%TEMAS_JOGO.length];
   temaAudio=new Audio(faixa);temaAudio.volume=.26*volumeAudio;
   temaAudio.onended=()=>{temaAudio=null;temaIndice=(temaIndice+1)%TEMAS_JOGO.length;atualizarPlayerTema();tocarTemaJogo();};
@@ -1124,6 +1125,7 @@ function tocarTemaJogo(){
 }
 function pausarTemaJogo(){if(temaAudio){temaAudio.pause();atualizarPlayerTema();}}
 function retomarTemaJogo(){
+  if(expedicaoAudio || prologoAudio)return;
   if(!temaAudio)tocarTemaJogo();
   else temaAudio.play().then(()=>atualizarPlayerTema()).catch(()=>{});
 }
@@ -1147,6 +1149,7 @@ function selecionarTema(valor){
   tocarTemaJogo();
 }
 function alternarTema(){
+  if(expedicaoAudio || prologoAudio)return;
   if(temaAudio && !temaAudio.paused){temaAudio.pause();atualizarPlayerTema();return;}
   if(!temaAudio)tocarTemaJogo();
   else temaAudio.play().then(()=>atualizarPlayerTema()).catch(()=>{});
@@ -1160,6 +1163,7 @@ function temaProxima(){
   selecionarTema(String(temaIndice));
 }
 function tocarAudioPrologo(caminho){
+  pausarTemaJogo();
   if(prologoAudio && prologoFaixa===caminho)return;
   if(prologoAudio){prologoAudio.pause();prologoAudio.currentTime=0;}
   prologoFaixa=caminho;prologoAudio=new Audio(caminho);prologoAudio.loop=true;prologoAudio.volume=.32*volumeAudio;
@@ -4111,6 +4115,9 @@ function restaurarJogo(dados){
   // Reconecta os objetos compartilhados apts a leitura do JSON.
   estado.sobreviventes = estado.sobreviventes.map(s=>estado.familia.membros.find(m=>m.id === s.id));
   clearInterval(loopId); limparModais();
+  pararAudioExpedicao(false);
+  pararAudioPrologo();
+  pararTemaJogo();
   S=estado; S.pausado=false;
   if(S.base?.excursao)tocarAudioExpedicao();
   else if(S.prologo?.concluido)tocarTemaJogo();

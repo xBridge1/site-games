@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DOOM · Shareware</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#111310;color:#eee;font-family:system-ui,sans-serif}#dos{width:100%;height:100%}#intro{min-height:100%;display:grid;place-content:center;text-align:center;padding:50px 24px;background:radial-gradient(ellipse at center,#472a1b,#111310 65%)}h1{font:clamp(70px,15vw,140px) Impact,sans-serif;color:#efbf77;letter-spacing:-4px;margin:0}p{color:#b6b6a8;line-height:1.8;max-width:540px}small{letter-spacing:3px;color:#d8fa70}button{padding:15px 25px;border:0;border-radius:6px;background:#d8fa70;color:#171c0e;font:700 15px system-ui;cursor:pointer}button:disabled{opacity:.6;cursor:wait}button:focus-visible{outline:2px solid white;outline-offset:4px}.keys{font-size:13px}kbd{padding:3px 5px;background:#ffffff12;border:1px solid #ffffff22;border-radius:3px}#status{font-size:13px}#intro[hidden],#dos[hidden]{display:none}
+  </style>
+</head>
+<body>
+  <div id="intro"><small>1993 / ID SOFTWARE / SHAREWARE</small><h1>DOOM</h1><p>O primeiro episódio. Nove mapas. Uma passagem só de ida para o inferno.</p><button id="start">Iniciar DOOM</button><p class="keys"><kbd>↑ ↓ ← →</kbd> mover · <kbd>Ctrl</kbd> atirar · <kbd>Espaço</kbd> usar<br><kbd>Shift</kbd> correr · <kbd>1–7</kbd> armas · <kbd>Esc</kbd> menu<br>Melhor com teclado. Clique no jogo para controlar.</p><p id="status" role="status">O jogo e o emulador são carregados ao iniciar.</p></div>
+  <div id="dos" hidden></div>
+  <script>
+    const button = document.getElementById('start');
+    const status = document.getElementById('status');
+    const base = '/vendor/js-dos/';
+    let resources;
+    function loadResources() {
+      if (resources) return resources;
+      resources = Promise.all([
+        new Promise((resolve, reject) => {
+          const css = document.createElement('link');
+          css.rel = 'stylesheet'; css.href = base + 'js-dos.css';
+          css.onload = resolve; css.onerror = () => { css.remove(); reject(new Error('CSS')); };
+          document.head.appendChild(css);
+        }),
+        new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = base + 'js-dos.js';
+          script.onload = resolve; script.onerror = () => { script.remove(); reject(new Error('Script')); };
+          document.head.appendChild(script);
+        })
+      ]).catch(error => { resources = null; throw error; });
+      return resources;
+    }
+    button.onclick = async () => {
+      button.disabled = true;
+      status.textContent = 'Preparando o emulador…';
+      const target = document.getElementById('dos');
+      try {
+        await loadResources();
+        emulators.pathPrefix = base;
+        target.hidden = false;
+        document.getElementById('intro').hidden = true;
+        await Dos(target).run('./doom.jsdos');
+      } catch (error) {
+        target.replaceChildren(); target.hidden = true;
+        document.getElementById('intro').hidden = false;
+        status.textContent = 'Não foi possível iniciar. Confira sua conexão e tente novamente.';
+        button.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>

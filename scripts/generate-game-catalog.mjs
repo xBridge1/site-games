@@ -38,6 +38,7 @@ const games = fs.existsSync(gamesDirectory)
           rating: Number(manifest.rating || 0),
           plays: Number(manifest.plays || 0),
           kind,
+          addedAt: manifest.addedAt || '2026-09-29T18:00:00Z',
           url: `/games/${encodeURIComponent(slug)}/${encodeEntry(entry)}`,
           local: false,
           emoji: manifest.emoji || '🎮',

@@ -123,7 +123,7 @@ export default function GamePlayer({ game, onClose }) {
               title={game.title}
               className={isStandaloneGame ? 'html-game-frame' : undefined}
               style={isStandaloneGame ? undefined : { width: '100%', height: '500px', border: 'none', borderRadius: '8px' }}
-              allow="fullscreen"
+              allow="autoplay; fullscreen; gamepad"
               allowFullScreen
             />
           )}
