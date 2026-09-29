@@ -43,7 +43,7 @@
         emulators.pathPrefix = base;
         target.hidden = false;
         document.getElementById('intro').hidden = true;
-        await Dos(target).run('./doom.jsdos');
+        await Dos(target).run('./doom.jsdos?v=2');
       } catch (error) {
         target.replaceChildren(); target.hidden = true;
         document.getElementById('intro').hidden = false;

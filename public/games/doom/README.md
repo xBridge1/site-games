@@ -14,3 +14,8 @@ Integration documentation: https://js-dos.com/v7/build/docs/browser/.
 
 Keyboard: arrows move, Ctrl fires, Space uses doors, Shift runs, numbers select
 weapons, Escape opens the game menu. The site's floating arrow closes the game.
+
+Rendering: `.jsdos/dosbox.conf` uses `aspect=false` and `scaler=none`.
+Enabling DOSBox's aspect correction produced duplicated HUD rows and corrupted
+pixels with this browser runtime. Keep the native 320x200 framebuffer intact.
+The bundle URL includes a revision query to avoid reusing the previous config.
