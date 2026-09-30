@@ -6,41 +6,46 @@ export default function GamePlayer({ game, onClose }) {
   const contentRef = useRef(null);
   const dragRef = useRef(null);
   const draggedRef = useRef(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [bubblePosition, setBubblePosition] = useState({ left: 16, top: 16 });
-  const isStandaloneGame = ['html', 'swf'].includes(game?.kind);
 
   useEffect(() => {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape') onClose();
+    const handleEsc = (event) => {
+      if (event.key === 'Escape' && !document.fullscreenElement) onClose();
     };
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === contentRef.current);
+    };
+
     window.addEventListener('keydown', handleEsc);
-    return () => window.removeEventListener('keydown', handleEsc);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      if (document.fullscreenElement === contentRef.current) document.exitFullscreen?.().catch(() => {});
+    };
   }, [onClose]);
 
-  useEffect(() => {
-    if (!isStandaloneGame || !contentRef.current) return undefined;
-
-    const element = contentRef.current;
-    const enterFullscreen = async () => {
-      try {
-        if (!document.fullscreenElement && element.requestFullscreen) {
-          await element.requestFullscreen();
-        }
-      } catch {
-        // Alguns navegadores bloqueiam fullscreen automático; o CSS continua em 100vh.
-      }
-    };
-
-    enterFullscreen();
-
-    return () => {
-      if (document.fullscreenElement === element && document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
-      }
-    };
-  }, [isStandaloneGame]);
-
   if (!game) return null;
+
+  const toggleFullscreen = async () => {
+    const element = contentRef.current;
+    if (!element) return;
+
+    try {
+      if (document.fullscreenElement === element) {
+        await document.exitFullscreen();
+      } else if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else if (element.requestFullscreen) {
+        await element.requestFullscreen();
+      } else {
+        setIsFullscreen((value) => !value);
+      }
+    } catch {
+      setIsFullscreen((value) => !value);
+    }
+  };
 
   const handleBubblePointerDown = (event) => {
     event.preventDefault();
@@ -53,17 +58,9 @@ export default function GamePlayer({ game, onClose }) {
 
     const handlePointerMove = (moveEvent) => {
       if (!dragRef.current) return;
-
       const size = 48;
-      const left = Math.min(
-        Math.max(8, moveEvent.clientX - dragRef.current.offsetX),
-        Math.max(8, window.innerWidth - size - 8)
-      );
-      const top = Math.min(
-        Math.max(8, moveEvent.clientY - dragRef.current.offsetY),
-        Math.max(8, window.innerHeight - size - 8)
-      );
-
+      const left = Math.min(Math.max(8, moveEvent.clientX - dragRef.current.offsetX), Math.max(8, window.innerWidth - size - 8));
+      const top = Math.min(Math.max(8, moveEvent.clientY - dragRef.current.offsetY), Math.max(8, window.innerHeight - size - 8));
       draggedRef.current = true;
       setBubblePosition({ left, top });
     };
@@ -90,15 +87,25 @@ export default function GamePlayer({ game, onClose }) {
   };
 
   return (
-    <div className={'modal-overlay ' + (isStandaloneGame ? 'html-game-overlay' : '')} onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose}>
       <div
         ref={contentRef}
-        className={'modal-content ' + (isStandaloneGame ? 'html-game-content' : '')}
-        onClick={(e) => e.stopPropagation()}
+        className={'modal-content game-window ' + (isFullscreen ? 'game-fullscreen' : '')}
+        onClick={(event) => event.stopPropagation()}
       >
-        {isStandaloneGame ? (
+        <div className="game-toolbar">
+          <h2>{game.title}</h2>
+          <div className="game-toolbar-actions">
+            <button className="game-action" onClick={toggleFullscreen} aria-label={isFullscreen ? 'Voltar ao modo janela' : 'Abrir em tela cheia'}>
+              {isFullscreen ? 'Janela' : 'Tela cheia'}
+            </button>
+            {!isFullscreen && <button className="modal-close" onClick={onClose} aria-label="Fechar jogo">×</button>}
+          </div>
+        </div>
+
+        {isFullscreen && (
           <button
-            className="modal-close html-game-bubble"
+            className="modal-close game-bubble"
             style={{ left: `${bubblePosition.left}px`, top: `${bubblePosition.top}px` }}
             onPointerDown={handleBubblePointerDown}
             onClick={handleBubbleClick}
@@ -107,12 +114,9 @@ export default function GamePlayer({ game, onClose }) {
           >
             ←
           </button>
-        ) : (
-          <button className="modal-close" onClick={onClose} aria-label="Fechar jogo">×</button>
         )}
 
-        <div className={'modal-body ' + (isStandaloneGame ? 'html-game-body' : '')}>
-          {!isStandaloneGame && <h2 style={{ marginBottom: '15px' }}>{game.title}</h2>}
+        <div className="game-content-body">
           {game.local ? (
             <ReflexGame />
           ) : game.kind === 'swf' ? (
@@ -121,8 +125,7 @@ export default function GamePlayer({ game, onClose }) {
             <iframe
               src={game.url}
               title={game.title}
-              className={isStandaloneGame ? 'html-game-frame' : undefined}
-              style={isStandaloneGame ? undefined : { width: '100%', height: '500px', border: 'none', borderRadius: '8px' }}
+              className="game-frame"
               allow="autoplay; fullscreen; gamepad"
               allowFullScreen
             />

@@ -1,0 +1,56 @@
+.dos-section {
+  margin: 0 0 56px;
+  padding: 28px;
+  border: 1px solid #3f4b32;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #171d15 0%, #121513 72%);
+  box-shadow: inset 0 1px 0 #d8fa7012;
+}
+
+.dos-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.dos-heading h2 {
+  margin: 0;
+  color: #eef4df;
+  font-size: 27px;
+  letter-spacing: -1px;
+}
+
+.dos-heading h2 span {
+  margin-left: 8px;
+  color: #7d896c;
+  font: 16px Consolas, monospace;
+}
+
+.section-description {
+  max-width: 430px;
+  margin: 10px 0 0;
+  color: #9da995;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.dos-badge {
+  flex: none;
+  padding: 7px 9px;
+  border: 1px solid #66774b;
+  border-radius: 4px;
+  color: #d8fa70;
+  font: 9px Consolas, monospace;
+  letter-spacing: 1px;
+}
+
+.dos-section .grid {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .dos-section { padding: 20px; }
+  .dos-heading { align-items: flex-start; flex-direction: column; gap: 14px; }
+}

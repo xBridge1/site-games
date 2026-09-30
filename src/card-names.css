@@ -1,0 +1,23 @@
+.art-word {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 92%;
+  min-height: 70px;
+  padding: 0 8px;
+  text-align: center;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+  font-family: Inter, "Segoe UI", sans-serif;
+  font-size: clamp(20px, 2.4vw, 34px);
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  line-height: 0.98;
+  color: var(--art-color);
+  text-shadow: 0 5px 18px #0008;
+  transform: rotate(-4deg);
+}
+
+@media (max-width: 760px) {
+  .art-word { font-size: clamp(18px, 5vw, 28px); }
+}
