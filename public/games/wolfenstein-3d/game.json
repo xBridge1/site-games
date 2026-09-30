@@ -1,0 +1,9 @@
+{
+  "title": "Wolfenstein 3D",
+  "category": "Ação",
+  "description": "A versão shareware do clássico de tiro em primeira pessoa, com o primeiro episódio.",
+  "kind": "dos",
+  "platform": "dos",
+  "entry": "game.jsdos",
+  "addedAt": "2026-09-30T12:00:00Z"
+}

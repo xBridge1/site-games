@@ -9,6 +9,7 @@ const outputFile = path.join(projectRoot, 'src', 'data', 'localGames.generated.j
 const inferKind = (entry) => {
   const extension = path.extname(entry).toLowerCase();
   if (extension === '.swf') return 'swf';
+  if (extension === '.jsdos') return 'dos';
   if (extension === '.html' || extension === '.htm') return 'html';
   return 'external';
 };
@@ -27,8 +28,11 @@ const games = fs.existsSync(gamesDirectory)
         if (!fs.existsSync(manifestFile)) return null;
 
         const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
-        const entry = manifest.entry || (manifest.kind === 'swf' ? 'game.swf' : 'index.html');
+        const entry = manifest.entry || (
+          manifest.kind === 'swf' ? 'game.swf' : manifest.kind === 'dos' ? 'game.jsdos' : 'index.html'
+        );
         const kind = manifest.kind || inferKind(entry);
+        const entryUrl = `/games/${encodeURIComponent(slug)}/${encodeEntry(entry)}`;
 
         return {
           id: manifest.id || slug,
@@ -38,9 +42,11 @@ const games = fs.existsSync(gamesDirectory)
           rating: Number(manifest.rating || 0),
           plays: Number(manifest.plays || 0),
           kind,
-          platform: manifest.platform || (kind === 'swf' ? 'flash' : 'web'),
+          platform: manifest.platform || (kind === 'dos' ? 'dos' : kind === 'swf' ? 'flash' : 'web'),
           addedAt: manifest.addedAt || '2026-09-29T18:00:00Z',
-          url: `/games/${encodeURIComponent(slug)}/${encodeEntry(entry)}`,
+          url: kind === 'dos'
+            ? `/dos-player.html?bundle=${encodeURIComponent(entryUrl)}`
+            : entryUrl,
           local: false,
           emoji: manifest.emoji || '🎮',
         };

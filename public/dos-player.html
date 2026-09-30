@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogo DOS</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body, #dos { width: 100%; height: 100%; margin: 0; }
+    body { overflow: hidden; background: #090d0a; color: #d8fa70; font: 14px system-ui, sans-serif; }
+    #dos { display: none; }
+    #status { display: grid; place-items: center; height: 100%; padding: 24px; text-align: center; }
+    #status[data-ready="true"] { display: none; }
+  </style>
+</head>
+<body>
+  <div id="status" role="status">Carregando o emulador DOS...</div>
+  <div id="dos"></div>
+  <script>
+    const base = '/vendor/js-dos/';
+    const status = document.getElementById('status');
+    const target = document.getElementById('dos');
+    const bundle = new URLSearchParams(location.search).get('bundle');
+
+    function validBundle(value) {
+      if (!value) return false;
+      const url = new URL(value, location.href);
+      return url.origin === location.origin && url.pathname.startsWith('/games/') && url.pathname.endsWith('.jsdos');
+    }
+
+    function loadResources() {
+      return Promise.all([
+        new Promise((resolve, reject) => {
+          const css = document.createElement('link');
+          css.rel = 'stylesheet';
+          css.href = base + 'js-dos.css';
+          css.onload = resolve;
+          css.onerror = () => reject(new Error('Falha ao carregar o CSS do js-dos'));
+          document.head.appendChild(css);
+        }),
+        new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = base + 'js-dos.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error('Falha ao carregar o js-dos'));
+          document.head.appendChild(script);
+        })
+      ]);
+    }
+
+    async function start() {
+      if (!validBundle(bundle)) throw new Error('Pacote DOS inválido');
+      await loadResources();
+      emulators.pathPrefix = base;
+      target.style.display = 'block';
+      status.dataset.ready = 'true';
+      await Dos(target).run(new URL(bundle, location.href).href);
+    }
+
+    start().catch((error) => {
+      status.textContent = 'Não foi possível iniciar este jogo DOS.';
+      console.error(error);
+    });
+  </script>
+</body>
+</html>
