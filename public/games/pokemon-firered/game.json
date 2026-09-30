@@ -1,0 +1,10 @@
+{
+  "title": "Pokémon FireRed",
+  "category": "RPG",
+  "description": "Explore Kanto, capture Pokémon e desafie os líderes de ginásio.",
+  "kind": "rom",
+  "system": "gba",
+  "platform": "gba",
+  "entry": "game.gba",
+  "addedAt": "2026-09-30T18:01:00Z"
+}

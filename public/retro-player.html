@@ -42,7 +42,10 @@
       const script = document.createElement('script');
       script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
       script.onload = () => { status.dataset.ready = 'true'; };
-      script.onerror = () => { throw new Error('Falha ao carregar o EmulatorJS'); };
+      script.onerror = () => {
+        status.dataset.ready = 'false';
+        status.textContent = 'Não foi possível carregar o emulador. Confira sua conexão e tente novamente.';
+      };
       document.body.appendChild(script);
     }
 

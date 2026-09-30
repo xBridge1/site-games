@@ -57,6 +57,7 @@ const games = fs.existsSync(gamesDirectory)
           rating: Number(manifest.rating || 0),
           plays: Number(manifest.plays || 0),
           kind,
+          ageRating: manifest.ageRating === 18 ? 18 : null,
           system,
           platform: manifest.platform || (
             kind === 'dos' ? 'dos' : kind === 'rom' ? system : kind === 'swf' ? 'flash' : 'web'

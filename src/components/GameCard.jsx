@@ -29,7 +29,7 @@ export default function GameCard({ game, onPlay, onToggleFav, isFav }) {
           <span className="art-grid" aria-hidden="true" />
           <span className="art-word">{game.title}</span>
         </button>
-        <span className="format-tag">{format}</span>
+        <span className="format-tag">{format}{game.ageRating === 18 ? ' · +18' : ''}</span>
         <button
           className={'fav-btn ' + (isFav ? 'active' : '')}
           onClick={() => onToggleFav(game.id)}

@@ -7,6 +7,7 @@ export default function GamePlayer({ game, onClose }) {
   const dragRef = useRef(null);
   const draggedRef = useRef(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [adultConfirmed, setAdultConfirmed] = useState(false);
   const [bubblePosition, setBubblePosition] = useState({ left: 16, top: 16 });
 
   useEffect(() => {
@@ -117,7 +118,17 @@ export default function GamePlayer({ game, onClose }) {
         )}
 
         <div className="game-content-body">
-          {game.local ? (
+          {game.ageRating === 18 && !adultConfirmed ? (
+            <section className="age-gate" role="dialog" aria-modal="true" aria-labelledby="age-gate-title" aria-describedby="age-gate-description">
+              <span className="age-gate-badge">+18</span>
+              <h3 id="age-gate-title">Conteúdo para maiores de 18 anos</h3>
+              <p id="age-gate-description">{game.title} contém conteúdo adulto. Confirme que você tem 18 anos ou mais para continuar.</p>
+              <div className="age-gate-actions">
+                <button className="game-action" onClick={onClose} autoFocus>Voltar ao catálogo</button>
+                <button className="play-btn" onClick={() => setAdultConfirmed(true)}>Tenho 18 anos ou mais — continuar</button>
+              </div>
+            </section>
+          ) : game.local ? (
             <ReflexGame />
           ) : game.kind === 'swf' ? (
             <RufflePlayer src={game.url} title={game.title} />

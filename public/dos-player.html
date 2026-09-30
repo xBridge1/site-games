@@ -8,14 +8,14 @@
     * { box-sizing: border-box; }
     html, body, #dos { width: 100%; height: 100%; margin: 0; }
     body { overflow: hidden; background: #090d0a; color: #d8fa70; font: 14px system-ui, sans-serif; }
-    #dos { display: none; }
+    #dos[hidden] { display: none; }
     #status { display: grid; place-items: center; height: 100%; padding: 24px; text-align: center; }
     #status[data-ready="true"] { display: none; }
   </style>
 </head>
 <body>
   <div id="status" role="status">Carregando o emulador DOS...</div>
-  <div id="dos"></div>
+  <div id="dos" hidden></div>
   <script>
     const base = '/vendor/js-dos/';
     const status = document.getElementById('status');
@@ -52,12 +52,16 @@
       if (!validBundle(bundle)) throw new Error('Pacote DOS inválido');
       await loadResources();
       emulators.pathPrefix = base;
-      target.style.display = 'block';
+      target.hidden = false;
       status.dataset.ready = 'true';
-      await Dos(target).run(new URL(bundle, location.href).href);
+      const bundleUrl = new URL(bundle, location.href);
+      bundleUrl.searchParams.set('v', '2');
+      await Dos(target).run(bundleUrl.href);
     }
 
     start().catch((error) => {
+      status.dataset.ready = 'false';
+      target.hidden = true;
       status.textContent = 'Não foi possível iniciar este jogo DOS.';
       console.error(error);
     });
