@@ -10,8 +10,16 @@ const inferKind = (entry) => {
   const extension = path.extname(entry).toLowerCase();
   if (extension === '.swf') return 'swf';
   if (extension === '.jsdos') return 'dos';
+  if (extension === '.gb' || extension === '.gbc' || extension === '.gba') return 'rom';
   if (extension === '.html' || extension === '.htm') return 'html';
   return 'external';
+};
+
+const inferSystem = (entry) => {
+  const extension = path.extname(entry).toLowerCase();
+  if (extension === '.gba') return 'gba';
+  if (extension === '.gb' || extension === '.gbc') return 'gbc';
+  return null;
 };
 
 const encodeEntry = (entry) => entry
@@ -29,9 +37,16 @@ const games = fs.existsSync(gamesDirectory)
 
         const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
         const entry = manifest.entry || (
-          manifest.kind === 'swf' ? 'game.swf' : manifest.kind === 'dos' ? 'game.jsdos' : 'index.html'
+          manifest.kind === 'swf'
+            ? 'game.swf'
+            : manifest.kind === 'dos'
+              ? 'game.jsdos'
+              : manifest.kind === 'rom'
+                ? 'game.gba'
+                : 'index.html'
         );
         const kind = manifest.kind || inferKind(entry);
+        const system = manifest.system || inferSystem(entry);
         const entryUrl = `/games/${encodeURIComponent(slug)}/${encodeEntry(entry)}`;
 
         return {
@@ -42,11 +57,16 @@ const games = fs.existsSync(gamesDirectory)
           rating: Number(manifest.rating || 0),
           plays: Number(manifest.plays || 0),
           kind,
-          platform: manifest.platform || (kind === 'dos' ? 'dos' : kind === 'swf' ? 'flash' : 'web'),
+          system,
+          platform: manifest.platform || (
+            kind === 'dos' ? 'dos' : kind === 'rom' ? system : kind === 'swf' ? 'flash' : 'web'
+          ),
           addedAt: manifest.addedAt || '2026-09-29T18:00:00Z',
           url: kind === 'dos'
             ? `/dos-player.html?bundle=${encodeURIComponent(entryUrl)}`
-            : entryUrl,
+            : kind === 'rom'
+              ? `/retro-player.html?rom=${encodeURIComponent(entryUrl)}&system=${encodeURIComponent(system || '')}`
+              : entryUrl,
           local: false,
           emoji: manifest.emoji || '🎮',
         };

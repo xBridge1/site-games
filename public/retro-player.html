@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jogo portátil</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body, #game { width: 100%; height: 100%; margin: 0; }
+    body { overflow: hidden; background: #080b12; color: #d8fa70; font: 14px system-ui, sans-serif; }
+    #game { min-height: 100%; }
+    #status { display: grid; place-items: center; height: 100%; padding: 24px; text-align: center; }
+    #status[data-ready="true"] { display: none; }
+  </style>
+</head>
+<body>
+  <div id="status" role="status">Carregando o emulador portátil...</div>
+  <div id="game"></div>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const rom = params.get('rom');
+    const system = params.get('system');
+    const status = document.getElementById('status');
+
+    function validRom(value) {
+      if (!value) return false;
+      const url = new URL(value, location.href);
+      return url.origin === location.origin && url.pathname.startsWith('/games/') && /\.(gb|gbc|gba)$/i.test(url.pathname);
+    }
+
+    function start() {
+      if (!validRom(rom) || !['gbc', 'gba'].includes(system)) throw new Error('ROM portátil inválida');
+
+      window.EJS_player = '#game';
+      window.EJS_gameUrl = new URL(rom, location.href).href;
+      window.EJS_biosUrl = '';
+      window.EJS_core = system === 'gba' ? 'gba' : 'gambatte';
+      window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+      window.EJS_language = 'pt-BR';
+      window.EJS_startOnLoaded = true;
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+      script.onload = () => { status.dataset.ready = 'true'; };
+      script.onerror = () => { throw new Error('Falha ao carregar o EmulatorJS'); };
+      document.body.appendChild(script);
+    }
+
+    try {
+      start();
+    } catch (error) {
+      status.textContent = 'Não foi possível iniciar esta ROM portátil.';
+      console.error(error);
+    }
+  </script>
+</body>
+</html>

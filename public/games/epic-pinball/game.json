@@ -1,0 +1,9 @@
+{
+  "title": "Epic Pinball",
+  "category": "Esportes",
+  "description": "Pinball clássico em DOS com a mesa shareware Super Android.",
+  "kind": "dos",
+  "platform": "dos",
+  "entry": "game.jsdos",
+  "addedAt": "2026-09-30T12:03:00Z"
+}

@@ -1,0 +1,9 @@
+{
+  "title": "Quake",
+  "category": "Ação",
+  "description": "A versão shareware do clássico 3D da id Software, com o primeiro episódio.",
+  "kind": "dos",
+  "platform": "dos",
+  "entry": "game.jsdos",
+  "addedAt": "2026-09-30T12:04:00Z"
+}

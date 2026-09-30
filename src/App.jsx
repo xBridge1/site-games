@@ -22,6 +22,7 @@ export default function App() {
 
   const categories = ['Todos', ...new Set(games.map((game) => game.category))];
   const dosGames = games.filter((game) => game.platform === 'dos');
+  const portableGames = games.filter((game) => game.platform === 'gbc' || game.platform === 'gba');
   const featured = games.find((game) => game.id === 'doom');
 
   const toggleFav = (id) => {
@@ -77,6 +78,7 @@ export default function App() {
         <nav aria-label="Navegação principal">
           <a className="nav-active" href="#catalogo">Explorar</a>
           {dosGames.length > 0 && <a href="#dos">DOS</a>}
+          {portableGames.length > 0 && <a href="#portateis">Portáteis</a>}
           <button onClick={() => { setShowFavs(true); document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth' }); }}>
             Meus favoritos <span>{games.filter((game) => favorites.includes(game.id)).length}</span>
           </button>
@@ -113,6 +115,20 @@ export default function App() {
               <span className="dos-badge">TECLADO + TOUCH</span>
             </div>
             <div className="grid">{renderCards(dosGames)}</div>
+          </section>
+        )}
+
+        {portableGames.length > 0 && (
+          <section id="portateis" className="dos-section portable-section" aria-labelledby="portable-title">
+            <div className="dos-heading">
+              <div>
+                <p className="eyebrow">GAME BOY NO NAVEGADOR</p>
+                <h2 id="portable-title">Portáteis<span> / {String(portableGames.length).padStart(2, '0')}</span></h2>
+                <p className="section-description">Jogos de GBC e GBA com controles de toque, teclado e gamepad.</p>
+              </div>
+              <span className="dos-badge">GBC + GBA</span>
+            </div>
+            <div className="grid">{renderCards(portableGames)}</div>
           </section>
         )}
 

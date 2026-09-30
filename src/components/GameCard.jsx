@@ -14,6 +14,10 @@ export default function GameCard({ game, onPlay, onToggleFav, isFav }) {
             : 'classic';
   const format = game.platform === 'dos'
     ? 'DOS'
+    : game.platform === 'gba'
+      ? 'GBA'
+      : game.platform === 'gbc'
+        ? 'GBC'
     : game.kind === 'swf'
       ? 'FLASH'
       : 'WEB';

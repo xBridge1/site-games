@@ -1,0 +1,9 @@
+{
+  "title": "Duke Nukem 3D",
+  "category": "Ação",
+  "description": "A versão shareware do clássico de tiro em primeira pessoa, com o episódio L.A. Meltdown.",
+  "kind": "dos",
+  "platform": "dos",
+  "entry": "game.jsdos",
+  "addedAt": "2026-09-30T12:02:00Z"
+}
