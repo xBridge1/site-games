@@ -56,6 +56,7 @@ const games = fs.existsSync(gamesDirectory)
           title: manifest.title || slug,
           category: manifest.category || 'Jogos',
           description: manifest.description || 'Jogo online.',
+          warning: manifest.warning || null,
           rating: Number(manifest.rating || 0),
           plays: Number(manifest.plays || 0),
           kind,

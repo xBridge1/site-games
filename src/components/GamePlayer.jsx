@@ -136,10 +136,10 @@ export default function GamePlayer({ game, onClose }) {
             <RufflePlayer src={game.url} title={game.title} />
           ) : game.kind === 'external' ? (
             <div className="external-game-warning">
-              <span className="external-game-warning-label">AVISO DE COMPATIBILIDADE</span>
-              <h3>Este jogo exige Unity Web Player</h3>
-              <p>Use um navegador compatível com Unity Web Player, como Pale Moon 32-bit ou Basilisk 32-bit. Chrome, Edge e Firefox atuais não executam esse plugin.</p>
-              <a className="play-btn" href={game.url} target="_blank" rel="noreferrer noopener">Abrir Critical Strike Portable <span>↗</span></a>
+              <span className="external-game-warning-label">JOGO HOSPEDADO EXTERNAMENTE</span>
+              <h3>{game.platform === 'webplayer' ? 'Este jogo exige Unity Web Player' : 'Minecraft Classic oficial'}</h3>
+              <p>{game.warning || 'O jogo será aberto na página oficial em uma nova aba.'}</p>
+              <a className="play-btn" href={game.url} target="_blank" rel="noreferrer noopener">Abrir {game.title} <span>↗</span></a>
             </div>
           ) : (
             <iframe
