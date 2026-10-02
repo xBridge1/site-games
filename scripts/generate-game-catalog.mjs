@@ -37,6 +37,7 @@ const games = fs.existsSync(gamesDirectory)
         if (!fs.existsSync(manifestFile)) return null;
 
         const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+        if (manifest.hidden) return null;
         const entry = manifest.entry || (
           manifest.kind === 'swf'
             ? 'game.swf'
