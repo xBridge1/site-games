@@ -18,6 +18,10 @@ export default function GameCard({ game, onPlay, onToggleFav, isFav }) {
       ? 'GBA'
       : game.platform === 'gbc'
         ? 'GBC'
+        : game.platform === 'webplayer'
+          ? 'WEB PLAYER'
+        : game.platform === 'lan'
+          ? 'LAN'
     : game.kind === 'swf'
       ? 'FLASH'
       : 'WEB';

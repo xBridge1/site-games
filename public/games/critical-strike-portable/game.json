@@ -1,0 +1,9 @@
+{
+  "title": "Critical Strike Portable",
+  "category": "Ação",
+  "description": "Versão clássica local. Requer navegador com suporte ao Unity Web Player.",
+  "kind": "unity-webplayer",
+  "platform": "webplayer",
+  "entry": "CSPortable_2.682(fix).unity3d",
+  "addedAt": "2026-10-01T12:00:00Z"
+}

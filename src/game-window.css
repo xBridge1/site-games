@@ -57,6 +57,33 @@
   overflow: auto;
 }
 
+.external-game-warning {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  max-width: 620px;
+  margin: 12px auto;
+  padding: 30px;
+  border: 1px solid #6a5638;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #292118, #171814);
+  color: #e9e3d3;
+}
+
+.external-game-warning-label {
+  color: #f2c56c;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.external-game-warning h3,
+.external-game-warning p { margin: 0; }
+
+.external-game-warning h3 { color: #fff2cf; font-size: 22px; }
+
+.external-game-warning p { color: #c8c0ae; line-height: 1.65; }
+
 .game-frame {
   display: block;
   width: 100%;

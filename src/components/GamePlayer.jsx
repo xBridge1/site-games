@@ -97,9 +97,11 @@ export default function GamePlayer({ game, onClose }) {
         <div className="game-toolbar">
           <h2>{game.title}</h2>
           <div className="game-toolbar-actions">
-            <button className="game-action" onClick={toggleFullscreen} aria-label={isFullscreen ? 'Voltar ao modo janela' : 'Abrir em tela cheia'}>
-              {isFullscreen ? 'Janela' : 'Tela cheia'}
-            </button>
+            {game.kind !== 'external' && (
+              <button className="game-action" onClick={toggleFullscreen} aria-label={isFullscreen ? 'Voltar ao modo janela' : 'Abrir em tela cheia'}>
+                {isFullscreen ? 'Janela' : 'Tela cheia'}
+              </button>
+            )}
             {!isFullscreen && <button className="modal-close" onClick={onClose} aria-label="Fechar jogo">×</button>}
           </div>
         </div>
@@ -132,6 +134,13 @@ export default function GamePlayer({ game, onClose }) {
             <ReflexGame />
           ) : game.kind === 'swf' ? (
             <RufflePlayer src={game.url} title={game.title} />
+          ) : game.kind === 'external' ? (
+            <div className="external-game-warning">
+              <span className="external-game-warning-label">AVISO DE COMPATIBILIDADE</span>
+              <h3>Este jogo exige Unity Web Player</h3>
+              <p>Use um navegador compatível com Unity Web Player, como Pale Moon 32-bit ou Basilisk 32-bit. Chrome, Edge e Firefox atuais não executam esse plugin.</p>
+              <a className="play-btn" href={game.url} target="_blank" rel="noreferrer noopener">Abrir Critical Strike Portable <span>↗</span></a>
+            </div>
           ) : (
             <iframe
               src={game.url}

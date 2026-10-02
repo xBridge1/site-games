@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Unity Web Player</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; margin: 0; }
+    body { padding: 20px; overflow: auto; background: #111511; color: #e7ecd9; font: 14px system-ui, sans-serif; }
+    .warning { max-width: 760px; margin: 0 auto 18px; padding: 18px 20px; border: 1px solid #856a35; border-radius: 10px; background: #2c2417; }
+    .warning strong { display: block; margin-bottom: 7px; color: #ffd778; letter-spacing: .06em; }
+    .warning p { margin: 0; color: #ddd2b9; line-height: 1.55; }
+    #unityPlayer { display: block; width: min(960px, 100%); height: min(600px, 72vh); min-height: 360px; margin: 0 auto; background: #000; }
+    #status { max-width: 760px; margin: 18px auto; color: #d8fa70; }
+  </style>
+</head>
+<body>
+  <aside class="warning" role="alert">
+    <strong>AVISO: UNITY WEB PLAYER LEGADO</strong>
+    <p>Este jogo não funciona em Chrome, Edge ou Firefox atuais. É necessário um navegador compatível com Unity Web Player, como Pale Moon 32-bit ou Basilisk 32-bit, com o plugin instalado.</p>
+  </aside>
+  <div id="status" role="status">Verificando o arquivo do jogo...</div>
+  <object id="unityPlayer" type="application/vnd.unity" aria-label="Critical Strike Portable">
+    <param name="backgroundcolor" value="000000">
+    <param name="bordercolor" value="000000">
+    <param name="logoimage" value="">
+    <param name="progressbarimage" value="">
+  </object>
+  <script>
+    const game = new URLSearchParams(location.search).get('game');
+    const status = document.getElementById('status');
+    const player = document.getElementById('unityPlayer');
+
+    try {
+      const gameUrl = new URL(game, location.href);
+      if (gameUrl.origin !== location.origin || !gameUrl.pathname.startsWith('/games/') || !gameUrl.pathname.endsWith('.unity3d')) {
+        throw new Error('Arquivo Unity inválido');
+      }
+      const source = document.createElement('param');
+      source.name = 'src';
+      source.value = gameUrl.href;
+      player.appendChild(source);
+      status.textContent = 'Se o jogo não iniciar, este navegador não possui suporte ao Unity Web Player.';
+    } catch (error) {
+      player.remove();
+      status.textContent = 'Não foi possível localizar o arquivo Unity.';
+      console.error(error);
+    }
+  </script>
+</body>
+</html>

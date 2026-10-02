@@ -10,6 +10,7 @@ const inferKind = (entry) => {
   const extension = path.extname(entry).toLowerCase();
   if (extension === '.swf') return 'swf';
   if (extension === '.jsdos') return 'dos';
+  if (extension === '.unity3d') return 'unity-webplayer';
   if (extension === '.gb' || extension === '.gbc' || extension === '.gba') return 'rom';
   if (extension === '.html' || extension === '.htm') return 'html';
   return 'external';
@@ -67,6 +68,10 @@ const games = fs.existsSync(gamesDirectory)
             ? `/dos-player.html?bundle=${encodeURIComponent(entryUrl)}`
             : kind === 'rom'
               ? `/retro-player.html?rom=${encodeURIComponent(entryUrl)}&system=${encodeURIComponent(system || '')}`
+              : kind === 'unity-webplayer'
+                ? `/unity-webplayer.html?game=${encodeURIComponent(entryUrl)}`
+              : kind === 'external' && manifest.url
+                ? manifest.url
               : entryUrl,
           local: false,
           emoji: manifest.emoji || '🎮',
