@@ -1,0 +1,10 @@
+{
+  "title": "Samurai Jack: The Amulet of Time",
+  "category": "Aventura",
+  "description": "Samurai Jack: The Amulet of Time para Game Boy Advance. Jogue no navegador com teclado, toque ou controle.",
+  "kind": "rom",
+  "system": "gba",
+  "platform": "gba",
+  "entry": "game.gba",
+  "addedAt": "2026-10-03T12:00:00-03:00"
+}

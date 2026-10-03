@@ -7,15 +7,28 @@
   <style>
     * { box-sizing: border-box; }
     html, body, #game { width: 100%; height: 100%; margin: 0; }
-    body { overflow: hidden; background: #080b12; color: #d8fa70; font: 14px system-ui, sans-serif; }
-    #game { min-height: 100%; }
+    body { display: flex; flex-direction: column; overflow: hidden; background: #080b12; color: #d8fa70; font: 14px system-ui, sans-serif; }
+    #game { flex: 1; min-height: 0; height: auto; }
+    #controller-panel { flex: none; max-height: 40vh; overflow: auto; padding: 10px 16px; border-bottom: 1px solid #343a2f; background: #191b18; color: #eef4df; }
+    #controller-panel summary { cursor: pointer; }
+    #controller-panel p { margin: 8px 0; line-height: 1.5; font-size: 12px; }
+    #controller-list { padding-left: 20px; font-size: 12px; overflow-wrap: anywhere; }
     #status { display: grid; place-items: center; height: 100%; padding: 24px; text-align: center; }
     #status[data-ready="true"] { display: none; }
   </style>
 </head>
 <body>
+  <details id="controller-panel">
+    <summary>Controles · <span id="controller-status" role="status">Verificando suporte…</span></summary>
+    <p>Conecte o controle por USB ou Bluetooth, clique no jogo e pressione um botão para ativar a detecção.</p>
+    <ul id="controller-list"></ul>
+    <p id="controller-test">Pressione os botões ou mova os analógicos para testar.</p>
+    <p>Para editar, abra <strong>Configurações do Controle</strong> na barra do emulador. Escolha o jogador e o controle, clique no campo de uma ação e pressione a tecla ou botão desejado.</p>
+    <p>O emulador salva o mapeamento deste jogo neste navegador. Ele não importa perfis de outros aplicativos; limpar os dados do site pode apagar os ajustes.</p>
+  </details>
   <div id="status" role="status">Carregando o emulador portátil...</div>
   <div id="game"></div>
+  <script src="/controller-status.js"></script>
   <script>
     const params = new URLSearchParams(location.search);
     const rom = params.get('rom');
@@ -38,6 +51,7 @@
       window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
       window.EJS_language = 'pt-BR';
       window.EJS_startOnLoaded = true;
+      window.EJS_Buttons = { gamepad: { visible: true } };
 
       const script = document.createElement('script');
       script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';

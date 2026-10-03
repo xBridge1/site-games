@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function GameCard({ game, onPlay, onToggleFav, isFav }) {
+export default function GameCard({ game, onToggleFav, isFav }) {
   const theme = game.id === 'doom'
     ? 'doom'
     : String(game.id).includes('last')
@@ -29,10 +29,10 @@ export default function GameCard({ game, onPlay, onToggleFav, isFav }) {
   return (
     <article className={'card theme-' + theme}>
       <div className="card-art">
-        <button className="art-play" onClick={() => onPlay(game)} aria-label={'Jogar ' + game.title}>
+        <a className="art-play" href={`/?jogo=${encodeURIComponent(game.id)}`} aria-label={'Jogar ' + game.title}>
           <span className="art-grid" aria-hidden="true" />
           <span className="art-word">{game.title}</span>
-        </button>
+        </a>
         <span className="format-tag">{format}{game.ageRating === 18 ? ' · +18' : ''}</span>
         <button
           className={'fav-btn ' + (isFav ? 'active' : '')}
@@ -47,7 +47,7 @@ export default function GameCard({ game, onPlay, onToggleFav, isFav }) {
         <span className="card-category">{game.category}</span>
         <h3>{game.title}</h3>
         <p>{game.description}</p>
-        <button className="play-btn" onClick={() => onPlay(game)}>Jogar agora <span>↗</span></button>
+        <a className="play-btn" href={`/?jogo=${encodeURIComponent(game.id)}`}>Jogar agora <span>↗</span></a>
       </div>
     </article>
   );

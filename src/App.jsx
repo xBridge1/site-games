@@ -6,6 +6,17 @@ import GamePlayer from './components/GamePlayer';
 const normalize = (value) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 
 export default function App() {
+  const id = new URLSearchParams(window.location.search).get('jogo');
+  if (id !== null) {
+    const game = games.find(item => String(item.id) === id);
+    return game ? <GamePlayer key={game.id} game={game} /> : (
+      <main className="age-gate"><h1>Jogo não encontrado</h1><a className="game-action" href="/">Voltar ao catálogo</a></main>
+    );
+  }
+  return <Catalog />;
+}
+
+function Catalog() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('Todos');
   const [sort, setSort] = useState('name');
@@ -18,7 +29,6 @@ export default function App() {
       return [];
     }
   });
-  const [selectedGame, setSelectedGame] = useState(null);
 
   const categories = ['Todos', ...new Set(games.map((game) => game.category))];
   const dosGames = games.filter((game) => game.platform === 'dos');
@@ -63,7 +73,6 @@ export default function App() {
     <GameCard
       key={game.id}
       game={game}
-      onPlay={setSelectedGame}
       onToggleFav={toggleFav}
       isFav={favorites.includes(game.id)}
     />
@@ -98,11 +107,11 @@ export default function App() {
             <div className="hero-foot"><span>{String(games.length).padStart(2, '0')} jogos na coleção</span><span>Sem instalação</span></div>
           </div>
           {featured && (
-            <button className="featured" onClick={() => setSelectedGame(featured)} aria-label="Jogar Doom">
+            <a className="featured" href={`/?jogo=${encodeURIComponent(featured.id)}`} aria-label="Jogar Doom">
               <span className="featured-top"><span className="tag">ESCOLHA DA CENTRAL</span><span>1993 / DOS</span></span>
               <span className="doom-art" aria-hidden="true"><span className="doom-orbit" /><strong>DOOM</strong><span className="doom-subtitle">KNEE-DEEP IN THE DEAD</span></span>
               <span className="featured-bottom"><span><small>O inferno tem um botão de play.</small><b>DOOM · Shareware</b></span><span className="round-play">▶</span></span>
-            </button>
+            </a>
           )}
         </section>
 
@@ -161,7 +170,6 @@ export default function App() {
       </main>
 
       <footer className="footer"><span>Central da Sacanagem<span className="brand-dot">.</span></span><span>Uma pausa bem jogada. © {new Date().getFullYear()}</span><a href="#">Voltar ao topo ↑</a></footer>
-      {selectedGame && <GamePlayer key={selectedGame.id} game={selectedGame} onClose={() => setSelectedGame(null)} />}
     </div>
   );
 }
